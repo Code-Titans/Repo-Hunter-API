@@ -1,0 +1,9 @@
+require("babel-register");
+require("babel-core/register");
+require("babel-polyfill");
+
+const server = require("../src/index");
+
+server.Apollo.listen().then(
+  ({ url }) => console.log(`🚀 Server ready at ${url}  enjoy 🕸`)
+);

@@ -1,0 +1,27 @@
+{
+  "name": "repo-hunter-api",
+  "version": "1.0.0",
+  "description": "RepoHunter API",
+  "main": "index.js",
+  "repository": "https://github.com/Code-Titans/Repo-Hunter.git",
+  "author": "Bryan-Cee <cheruiyotbryan@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "start": "node bin/www"
+  },
+  "dependencies": {
+    "apollo-server": "^2.5.0",
+    "graphql": "^14.3.0",
+    "graphql-import": "^0.7.1",
+    "graphql-tools": "^4.0.4",
+    "pg": "^7.11.0"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.3",
+    "babel-polyfill": "^6.26.0",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-stage-2": "^6.24.1",
+    "babel-register": "^6.26.0"
+  }
+}

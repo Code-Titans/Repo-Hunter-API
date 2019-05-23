@@ -1,0 +1,4 @@
+type Query {
+    userId: Int!
+    username: String
+}
