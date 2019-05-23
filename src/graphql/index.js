@@ -8,11 +8,11 @@ import resolvers from './resolvers';
 import context from './context';
 
 const typeDefs = importSchema(path.join(__dirname, `/schema/schema.graphql`));
-const executableSchema = makeExecutableSchema({
+const schema = makeExecutableSchema({
   typeDefs,
   resolvers,
 });
 
-const schema = { executableSchema, context };
+const config = { schema, context };
 
-export default schema;
+export default config;
