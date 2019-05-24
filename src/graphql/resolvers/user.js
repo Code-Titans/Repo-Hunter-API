@@ -1,25 +1,15 @@
-const user = {
-  userId: (_, __, { client }) => {
-    return (
-      client.query(`SELECT actor_id FROM actor WHERE actor_id=1`)
-      .then((response) => {
-        const data = response.rows[0];
-        return data.actor_id;
-      })
-      .catch((error) => console.error(error.stack))
-    );
+export const User = {
+  userId: (parent) => {
+    return parent.userId;
   },
-  username: (_, __, { client }) => {
-    return (
-      client.query(`SELECT first_name, last_name FROM actor WHERE actor_id=1`)
-      .then((response) => {
-        const data = response.rows[0];
-        const {first_name, last_name} = data;
-        return `${first_name} ${last_name}`
-      })
-      .catch((error) => console.error(error.stack))
-    );
-  }
+  username: (parent) => {
+    return parent.username;
+  },
+  firstName: (parent) => {
+    return parent.firstName;
+  },
+  lastName: async (parent) => {
+    return parent.lastName;
+  },
 };
 
-export default user;

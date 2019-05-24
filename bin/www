@@ -1,9 +1,14 @@
 require("babel-register");
 require("babel-core/register");
 require("babel-polyfill");
+require("dotenv-safe").config({
+  allowEmptyValues: true
+});
 
 const server = require("../src/index");
+const PORT = process.env.PORT;
+const options = { port: PORT };
 
-server.Apollo.listen().then(
-  ({ url }) => console.log(`🚀 Server ready at ${url}  enjoy 🕸`)
+server.Apollo.listen(options).then(
+  ({ url }) => console.log(`🚀 Server ready at ${url}  enjoy 🤾‍`)
 );

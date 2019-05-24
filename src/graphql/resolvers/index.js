@@ -1,7 +1,9 @@
-import user from "./user";
+import { User } from "./user";
+import { Schema } from "./schema";
 
 const resolvers = {
-  Query: user,
+  Query: Schema,
+  User: User
 };
 
 export default resolvers;
