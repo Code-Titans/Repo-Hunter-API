@@ -1,6 +1,11 @@
 type User {
     userId: Int
     username: String
-    firstName: String
-    lastName: String
+    email: String
+    bio: String
+    company: String
+    website: String
+    location: String
+    profilePic: String
+
 }

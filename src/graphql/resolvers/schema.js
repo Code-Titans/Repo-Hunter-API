@@ -4,5 +4,10 @@ export const Schema = {
   },
   user: (_, { id }, { client }) => {
     return client.getUser(id)
+  },
+  comments: (_, __, { mongoClient }) => {
+    return mongoClient.getAllComments().then(results => {
+      return results;
+    });
   }
 };

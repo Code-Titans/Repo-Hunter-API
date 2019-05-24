@@ -1,6 +1,8 @@
 #import User from "./user.graphql"
+#import Comment from './comment.graphql'
 
 type Query {
     users: [User]
     user(id: Int): User
+    comments: [Comment]
 }

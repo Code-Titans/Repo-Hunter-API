@@ -1,4 +1,5 @@
 import PostgresAPI from './postgres';
+import mongoDbAPI from './mongodb'
 
 const config = {
   user: process.env.PGUSER,
@@ -9,9 +10,6 @@ const config = {
   idleTimeoutMillis: 30000,
 };
 
-const dataSources = {
-  PostgresAPI,
-  config
-};
+const mongoConfig = process.env.MONGO_URL;
 
-export default dataSources;
+export default { PostgresAPI, mongoDbAPI, config, mongoConfig };

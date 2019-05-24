@@ -1,0 +1,6 @@
+type Comment {
+    _id: String
+    comment: String
+    userId: Int
+    repoId: Int
+}

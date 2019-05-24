@@ -1,8 +1,10 @@
-import dataSources from '../../datasources';
+import databaseAPI from '../../datasources';
 
-const { config, PostgresAPI } = dataSources;
+const  { PostgresAPI, mongoDbAPI, config, mongoConfig } =  databaseAPI;
+
 const context = {
   client: new PostgresAPI(config),
+  mongoClient: new mongoDbAPI (mongoConfig)
 };
 
 export default context;
