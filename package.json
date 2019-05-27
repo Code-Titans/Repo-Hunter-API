@@ -7,7 +7,8 @@
   "author": "Bryan-Cee <cheruiyotbryan@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "start": "nodemon bin/www"
+    "start": "nodemon bin/www",
+    "db:migrate": "node bin/init_db"
   },
   "dependencies": {
     "apollo-server": "^2.5.0",

@@ -2,5 +2,5 @@
 
 type Query {
     users: [User]
-    user: User
+    user(id: Int): User
 }
