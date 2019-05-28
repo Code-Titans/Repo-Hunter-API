@@ -1,8 +1,13 @@
-#import User from "./user.graphql"
-#import Comment from './comment.graphql'
+#import User from "./types/user.graphql"
+#import Comment from './types/comment.graphql'
+#import UserLogin from "./types/login.graphql"
 
 type Query {
     users: [User]
     user(id: Int): User
     comments: [Comment]
+}
+
+type Mutation {
+    register(email: String!, password: String!): UserLogin
 }

@@ -1,4 +1,4 @@
-export const Schema = {
+export const Query = {
   users: (_, __, { client }) => {
     return client.getAllUsers();
   },

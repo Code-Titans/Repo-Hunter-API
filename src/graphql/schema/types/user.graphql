@@ -1,5 +1,5 @@
 type User {
-    userId: Int
+    id: Int
     username: String
     email: String
     bio: String
@@ -7,5 +7,4 @@ type User {
     website: String
     location: String
     profilePic: String
-
 }

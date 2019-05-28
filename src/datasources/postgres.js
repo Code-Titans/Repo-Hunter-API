@@ -1,4 +1,5 @@
 import { Pool } from 'pg';
+import { ForbiddenError } from 'apollo-server';
 
 class PostgresAPI extends Pool {
   constructor(config) {
@@ -8,6 +9,21 @@ class PostgresAPI extends Pool {
     });
   }
 
+  createUser = async ({email, password, salt} = {}) => {
+    // TODO check for uniqueness before creating an count
+    const user = await this.query(
+        `
+        INSERT INTO user_details(email, password, salt) 
+        VALUES($1, $2, $3)
+        RETURNING user_id, email
+        `,
+        [email, password, salt]
+    )
+    .then((res) => res.rows[0])
+    .catch((err) => err.message);
+    return this.userReducer(user)
+  };
+
   getAllUsers = async () => {
     const user = await this.query(`SELECT * FROM user_details`)
     .then((res) => res.rows)
@@ -16,23 +32,20 @@ class PostgresAPI extends Pool {
   };
 
   getUser = async (id) => {
-    const user = await this.query(`SELECT * FROM user_details WHERE user_id=$1`, [id] )
+    const user = await this.query(`SELECT * FROM user_details WHERE user_id=$1`, [id])
     .then((res) => res.rows[0])
     .catch(err => console.error(err.message, err.stack));
     return this.userReducer(user)
   };
 
   userReducer = (user) => {
-    if(!user){
-      return;
+    if (typeof user === "string") {
+      throw new ForbiddenError(user);
     }
-    const { user_id, first_name, last_name } = user;
-    const username = `${last_name} ${first_name}`;
+    const { user_id, email } = user;
     return {
-      userId: user_id,
-      firstName: first_name,
-      lastName: last_name,
-      username,
+      id: user_id,
+      email,
     }
   };
 }

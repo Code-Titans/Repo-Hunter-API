@@ -1,5 +1,5 @@
 export const User = {
-  userId: (parent) => {
+  id: (parent) => {
     return parent.userId;
   },
   username: (parent) => {
