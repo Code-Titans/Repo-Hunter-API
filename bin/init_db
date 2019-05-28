@@ -19,9 +19,10 @@ function createTables() {
             (
               "user_id" serial NOT NULL,
               "username" varchar(50) UNIQUE,
-              "first_name" varchar(15) NOT NULL,
-              "last_name" varchar(15) NOT NULL,
-              "email" varchar(50) NOT NULL,
+              "password" varchar(255) NOT NULL,
+              "first_name" varchar(15),
+              "last_name" varchar(15),
+              "email" varchar(50) NOT NULL UNIQUE,
               "bio" varchar(255),
               "company" varchar(20),
               "website" varchar(100),

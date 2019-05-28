@@ -13,16 +13,23 @@ class PostgresAPI extends Pool {
     // TODO check for uniqueness before creating an count
     const user = await this.query(
         `
-        INSERT INTO user_details(email, password, salt) 
-        VALUES($1, $2, $3)
+        INSERT INTO user_details(email, password) 
+        VALUES($1, $2)
         RETURNING user_id, email
         `,
-        [email, password, salt]
+        [email, password]
     )
     .then((res) => res.rows[0])
     .catch((err) => err.message);
     return this.userReducer(user)
   };
+
+  getUserByEmail = async (email) =>{
+    return await this.query(`SELECT * FROM user_details WHERE email=$1`, [email])
+    .then((res) => res.rows[0])
+    .catch(err => console.error(err.message, err.stack));
+  };
+
 
   getAllUsers = async () => {
     const user = await this.query(`SELECT * FROM user_details`)
