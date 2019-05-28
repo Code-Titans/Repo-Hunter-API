@@ -25,9 +25,14 @@ class PostgresAPI extends Pool {
   };
 
   getUserByEmail = async (email) =>{
-    return await this.query(`SELECT * FROM user_details WHERE email=$1`, [email])
+    return await this.query(
+        `
+        SELECT user_id, email, password FROM user_details
+        WHERE email=$1
+        `,
+        [email])
     .then((res) => res.rows[0])
-    .catch(err => console.error(err.message, err.stack));
+    .catch(err => err.message);
   };
 
 
