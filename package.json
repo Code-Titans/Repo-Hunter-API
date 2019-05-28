@@ -12,15 +12,13 @@
   },
   "dependencies": {
     "apollo-server": "^2.5.0",
-    "commander": "^2.20.0",
     "dotenv-safe": "^6.1.0",
     "graphql": "^14.3.0",
     "graphql-import": "^0.7.1",
     "mongodb": "^3.2.6",
     "mongodb-migrations": "^0.8.5",
     "nodemon": "^1.19.0",
-    "pg": "^7.11.0",
-    "yargs": "^13.2.4"
+    "pg": "^7.11.0"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
