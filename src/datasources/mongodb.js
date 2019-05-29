@@ -1,12 +1,12 @@
 import { MongoClient } from 'mongodb';
 
-class mongoDbAPI {
+class MongoDbAPI {
   constructor(url) {
     this.db = '';
-    MongoClient.connect(url, {useNewUrlParser: true}, (err, client) => {
+    MongoClient.connect(url, { useNewUrlParser: true }, (err, client) => {
       if (err) console.log(err);
-      this.getDbConnections(client.db(process.env.MONGO_DB_NAME))
-    })
+      this.getDbConnections(client.db(process.env.MONGO_DB_NAME));
+    });
   }
 
   getDbConnections = (client) => {
@@ -14,9 +14,11 @@ class mongoDbAPI {
   };
 
   getAllComments = async () => {
-    if (this.db === '') console.log("waiting for database client");
-    return await this.db.collection('comments').find().toArray();
+    if (this.db === '') console.log('waiting for database client');
+    const comment = await this.db.collection('comments').find().toArray();
+
+    return comment;
   }
 }
 
-export default mongoDbAPI
+export default MongoDbAPI;

@@ -1,5 +1,5 @@
 import PostgresAPI from './postgres';
-import mongoDbAPI from './mongodb'
+import MongoDbAPI from './mongodb';
 
 const config = {
   user: process.env.PGUSER,
@@ -12,4 +12,6 @@ const config = {
 
 const mongoConfig = process.env.MONGO_URL;
 
-export default { PostgresAPI, mongoDbAPI, config, mongoConfig };
+export default {
+  PostgresAPI, MongoDbAPI, config, mongoConfig,
+};

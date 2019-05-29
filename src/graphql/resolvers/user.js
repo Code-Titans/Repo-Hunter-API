@@ -1,15 +1,8 @@
-export const User = {
-  id: (parent) => {
-    return parent.userId;
-  },
-  username: (parent) => {
-    return parent.username;
-  },
-  firstName: (parent) => {
-    return parent.firstName;
-  },
-  lastName: async (parent) => {
-    return parent.lastName;
-  },
+const User = {
+  id: parent => parent.userId,
+  username: parent => parent.username,
+  firstName: parent => parent.firstName,
+  lastName: async parent => parent.lastName,
 };
 
+export default User;

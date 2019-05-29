@@ -1,6 +1,6 @@
 import { ApolloServer } from 'apollo-server';
 import config from './graphql';
 
-const server = module.exports = {};
+const server = new ApolloServer(config);
 
-server.Apollo = new ApolloServer(config);
+module.exports = { server };
