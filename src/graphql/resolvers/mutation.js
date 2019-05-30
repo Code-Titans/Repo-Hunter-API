@@ -1,7 +1,25 @@
 import bcrypt from 'bcrypt';
 import { generateToken, validateInput } from '../../helpers';
+import authenticateGoogle from '../../auth/passport';
 
 const Mutation = {
+  googleAuth: async (_, { accessToken }, { request, response }) => {
+    request.body = {
+      ...request.body,
+      access_token: accessToken,
+    };
+    try {
+      const { data, info } = await authenticateGoogle(request, response);
+
+      if (data) {
+        console.log(data);
+      }
+      console.log({ info });
+      return data;
+    } catch (e) {
+      return e;
+    }
+  },
   register: async (_, { email, password }, { client }) => {
     validateInput(email, password);
     const salt = await bcrypt.genSalt();

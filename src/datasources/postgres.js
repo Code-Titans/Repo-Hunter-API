@@ -9,6 +9,21 @@ class PostgresAPI extends Pool {
     });
   }
 
+  socialAuthCreateUser = async ({ picture, email, name }) => {
+    const user = await this.query(
+      `
+      INSERT INTO user_details(email, name, profile_pic)
+      VALUES($1, $2, $3)
+      RETURNING user_id, email
+      `,
+      [email, name, picture],
+    )
+      .then(res => res.rows[0])
+      .catch(err => err.message);
+
+    return this.userReducer(user);
+  };
+
   createUser = async ({ email, password } = {}) => {
     const user = await this.query(
       `
