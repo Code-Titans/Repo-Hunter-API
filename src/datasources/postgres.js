@@ -25,6 +25,7 @@ class PostgresAPI extends Pool {
   };
 
   getUserByEmail = async (email) => {
+    console.log('tried to get here');
     const user = await this.query(
       `
         SELECT user_id, email, password FROM user_details
