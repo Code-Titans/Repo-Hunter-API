@@ -7,7 +7,6 @@ import { importSchema } from 'graphql-import';
 import resolvers from './resolvers';
 import context from './context';
 
-
 const typeDefs = importSchema(path.join(__dirname, '/schema/schema.graphql'));
 const logger = { log: e => console.log(e) };
 

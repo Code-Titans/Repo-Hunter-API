@@ -1,7 +1,6 @@
 import bcrypt from 'bcrypt';
 import { generateToken, validateInput } from '../../helpers';
-import { GoogleAuthenticate , GitHubAuthenticate } from '../../Auth/passport';
-
+import { GoogleAuthenticate, GitHubAuthenticate } from '../../Auth/passport';
 
 const Mutation = {
   googleAuth: async (_, { accessToken }, { request, response }) => {
@@ -11,6 +10,7 @@ const Mutation = {
     };
     try {
       const { data, info } = await GoogleAuthenticate(request, response);
+
       if (data) {
         console.log(data);
       }
@@ -20,11 +20,12 @@ const Mutation = {
       return e;
     }
   },
-  gitHubAuth: async (_, __, { request, response })=>{
+  gitHubAuth: async (_, __, { request, response }) => {
     try {
-      GitHubAuthenticate(request, response);
-    }
-     catch (e) {
+      const { data } = await GitHubAuthenticate(request, response);
+
+      return data;
+    } catch (e) {
       return e;
     }
   },
@@ -36,7 +37,7 @@ const Mutation = {
 
     return user;
   },
-  login: async (_, { email, password }, { client,  request, response }) => {
+  login: async (_, { email, password }, { client }) => {
     validateInput(email, password);
     const user = await client.getUserByEmail(email);
 
