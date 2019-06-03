@@ -2,7 +2,7 @@
 #import Comment from './types/comment.graphql'
 #import UserLogin from "./types/login.graphql"
 #import Login from "./types/login.graphql"
-
+#import AuthResponse, AuthInput from "./types/auth.graphql"
 
 type Query {
     users: [User]
@@ -13,5 +13,6 @@ type Query {
 type Mutation {
     register(email: String!, password: String!): UserLogin
     login(email: String!, password: String): Login
+    googleAuth(accessToken: String!): AuthResponse
+    gitHubAuth: AuthResponse
 }
-

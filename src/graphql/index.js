@@ -17,6 +17,6 @@ const schema = makeExecutableSchema({
   logger,
 });
 
-const config = { schema, context };
+const config = { schema, context, cors: true };
 
 export default config;
