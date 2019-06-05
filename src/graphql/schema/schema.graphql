@@ -7,7 +7,7 @@
 type Query {
     users: [User]
     user(id: Int): User
-    comments: [Comment]
+    comments(repoId: Int!, userId: Int): [Comment]
 }
 
 type Mutation {
@@ -15,4 +15,9 @@ type Mutation {
     login(email: String!, password: String): Login
     googleAuth(accessToken: String!): AuthResponse
     gitHubAuth: AuthResponse
+    createComment(userId: Int!, repoId: Int!, text: String!): Comment
+}
+
+type Subscription {
+    comment(repoId: Int!): Comment
 }

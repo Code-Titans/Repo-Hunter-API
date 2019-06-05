@@ -12,6 +12,7 @@
     "lint": "eslint ./src"
   },
   "dependencies": {
+    "@apollo/gateway": "^0.6.1",
     "apollo-server": "^2.5.0",
     "bcrypt": "^3.0.6",
     "dotenv-safe": "^6.1.0",
@@ -22,8 +23,8 @@
     "mongodb-migrations": "^0.8.5",
     "nodemon": "^1.19.0",
     "passport": "^0.4.0",
-    "passport-google-oauth20": "^2.0.0",
     "passport-github": "^1.1.0",
+    "passport-google-oauth20": "^2.0.0",
     "pg": "^7.11.0",
     "validator": "^11.0.0"
   },

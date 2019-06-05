@@ -32,12 +32,12 @@ const GoogleAuthenticate = (request, response) => new Promise(
       { scope: ['profile'] },
       (err, data, info) => {
         if (err) reject(err);
+
         resolve({ data, info });
       },
     )(request, response);
   },
 );
-
 const GitHubAuthenticate = (request, response) => new Promise(
   () => {
     passport.authenticate(

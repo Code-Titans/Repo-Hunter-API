@@ -20,7 +20,6 @@ class PostgresAPI extends Pool {
     )
       .then(res => res.rows[0])
       .catch(err => err.message);
-
     return this.userReducer(user);
   };
 
@@ -35,22 +34,20 @@ class PostgresAPI extends Pool {
     )
       .then(res => res.rows[0])
       .catch(err => err.message);
-
     return this.userReducer(user);
   };
 
   getUserByEmail = async (email) => {
-    console.log('tried to get here');
     const user = await this.query(
       `
-        SELECT user_id, email, password FROM user_details
+        SELECT user_id, email, password 
+        FROM user_details
         WHERE email=$1
         `,
       [email],
     )
       .then(res => res.rows[0])
       .catch(err => err.message);
-
     return user;
   };
 
@@ -58,32 +55,68 @@ class PostgresAPI extends Pool {
     const users = await this.query('SELECT * FROM user_details')
       .then(res => res.rows)
       .catch(err => console.error(err.message, err.stack));
-
     return users.map(user => this.userReducer(user));
   };
 
-  getUser = async (id) => {
+  getUserById = async (id) => {
     const user = await this.query(
       `
-        SELECT * FROM user_details
+        SELECT * 
+        FROM user_details
         WHERE user_id=$1
         `,
       [id],
     )
       .then(res => res.rows[0])
-      .catch(err => console.error(err.message, err.stack));
-
+      .catch(err => err.message);
     return this.userReducer(user);
   };
 
-  userReducer = (user) => {
-    if (typeof user === 'string') {
-      throw new ForbiddenError(user);
-    }
-    const { user_id: id, email } = user;
+  getRepository = async (repoId) => {
+    const repository = await this.query(
+      `
+      SELECT *
+      FROM repositories
+      WHERE repo_id=$1
+      `,
+      [repoId],
+    )
+      .then(res => res.rows[0])
+      .catch(err => err.message);
 
-    return { id, email };
+    if (!repository) throw Error('Repo not found');
+
+    return this.repoReducer(repository);
   };
+
+  repoReducer = (repository) => {
+    if (typeof user === 'string') throw new ForbiddenError(repository);
+    const { repo_id: id, name: repo, repo_link: repoLink } = repository;
+    return { id, repo, repoLink };
+  };
+
+  userReducer = (user) => {
+    if (!user) throw Error('User not found');
+    if (typeof user === 'string') throw new ForbiddenError(user);
+    const {
+      user_id: id, email, username, profilePic,
+    } = user;
+    return {
+      id, email, username, profilePic,
+    };
+  };
+
+  getUserAndRepo = async (userId, repoId) => {
+    const details = await Promise.all([
+      this.getUserById(userId),
+      this.getRepository(repoId),
+    ])
+      .then(async res => res)
+      .catch((err) => {
+        throw new Error(err.message);
+      });
+    return { author: details[0], repo: details[1] };
+  }
 }
 
 export default PostgresAPI;

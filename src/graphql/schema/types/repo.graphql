@@ -1,8 +1,8 @@
 #import Comment from "./comment.graphql"
 
 type Repo {
-    id: ID!
-    repo: String!
+    id: ID
+    repo: String
     repoLink: String
     description: String
     image: String
