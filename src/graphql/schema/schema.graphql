@@ -1,13 +1,15 @@
 #import User from "./types/user.graphql"
-#import Comment from './types/comment.graphql'
+#import UserComment from './types/comment.graphql'
 #import UserLogin from "./types/login.graphql"
 #import Login from "./types/login.graphql"
 #import AuthResponse, AuthInput from "./types/auth.graphql"
+#import Repo from "./types/repo.graphql"
 
 type Query {
     users: [User]
     user(id: Int): User
-    comments(repoId: Int!, userId: Int): [Comment]
+    Repo: Repo
+    comments(repoId: Int!, userId: Int): [UserComment]
 }
 
 type Mutation {
@@ -15,9 +17,9 @@ type Mutation {
     login(email: String!, password: String): Login
     googleAuth(accessToken: String!): AuthResponse
     gitHubAuth: AuthResponse
-    createComment(userId: Int!, repoId: Int!, text: String!): Comment
+    createComment(userId: Int!, repoId: Int!, text: String!): UserComment
 }
 
 type Subscription {
-    comment(repoId: Int!): Comment
+    comment(repoId: Int!): UserComment
 }

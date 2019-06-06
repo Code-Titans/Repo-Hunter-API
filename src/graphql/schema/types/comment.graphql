@@ -1,9 +1,6 @@
-#import Repo from "./repo.graphql"
-#import User from "./user.graphql"
-
-type Comment {
-    _id: ID
-    text: String
-    repo: Repo
-    author: User
+type UserComment {
+    _id: String
+    comment: String
+    userId: Int
+    repoId: Int
 }

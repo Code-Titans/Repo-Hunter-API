@@ -1,11 +1,12 @@
 #import Comment from "./comment.graphql"
 
-type Repo {
-    id: ID
-    repo: String
+ type Repo {
+    id: ID!
+    repo: String!
     repoLink: String
     description: String
     image: String
-    comments: [Comment]
+    comments: [UserComment]
     likes:Int
+    owner: User
 }

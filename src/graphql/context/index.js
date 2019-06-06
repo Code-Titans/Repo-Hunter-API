@@ -6,7 +6,8 @@ const {
 } = databaseAPI;
 // TODO add a user object for authentication
 const pubsub = new PubSub();
-const dataSources = {
+
+export const dataSources = {
   client: new PostgresAPI(config),
   mongoClient: new MongoDbAPI(mongoConfig),
 };
