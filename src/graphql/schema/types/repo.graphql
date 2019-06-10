@@ -5,8 +5,7 @@
     repo: String!
     repoLink: String
     description: String
-    image: String
-    comments: [UserComment]
+    comments: [Comment]
     likes:Int
     owner: User
 }

@@ -9,17 +9,28 @@ type Query {
     users: [User]
     user(id: Int): User
     Repo: Repo
-    comments(repoId: Int!, userId: Int): [UserComment]
+    comments(repoId: Int!, userId: Int): [Comment]
 }
 
 type Mutation {
-    register(email: String!, password: String!): UserLogin
-    login(email: String!, password: String): Login
+    register(input: AuthenticationInput): UserLogin
+    login(input: AuthenticationInput): Login
     googleAuth(accessToken: String!): AuthResponse
     gitHubAuth: AuthResponse
-    createComment(userId: Int!, repoId: Int!, text: String!): UserComment
+    createComment(userId: Int!, repoId: Int!, text: String!): Comment
+    postRepo(post: PostRepoInput): Repo
 }
 
 type Subscription {
-    comment(repoId: Int!): UserComment
+    comment(repoId: Int!): Comment
+}
+
+input PostRepoInput {
+    link: String!
+    description: String
+}
+
+input AuthenticationInput {
+    email: String!
+    password: String!
 }

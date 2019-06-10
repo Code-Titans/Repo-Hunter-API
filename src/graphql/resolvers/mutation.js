@@ -31,14 +31,14 @@ const Mutation = {
       return e;
     }
   },
-  register: async (_, { email, password }, { client }) => {
+  register: async (_, { input: { email, password } }, { client }) => {
     validateInput(email, password);
     const salt = await bcrypt.genSalt();
     const hashedPassword = await bcrypt.hash(password, salt);
     const user = await client.createUser({ email, password: hashedPassword });
     return user;
   },
-  login: async (_, { email, password }, { client }) => {
+  login: async (_, { input:{ email, password } }, { client }) => {
     validateInput(email);
     const user = await client.getUserByEmail(email);
 
@@ -47,7 +47,7 @@ const Mutation = {
     const match = await bcrypt.compare(password, user.password);
 
     if (!match) throw new Error('Incorrect password');
-    const token = generateToken(user.email);
+    const token = generateToken({ email: user.email, id: user.user_id });
     return {
       token,
       user: {
@@ -81,6 +81,12 @@ const Mutation = {
     pubsub.publish(`COMMENT_${repoId}`, { comment });
     return comment;
   },
+  postRepo: async (_, { post: { link, description }}, { client, req }) => {
+    if (!link) throw UserInputError('Link not provided');
+    const { id: userId } = authenticateUser(req);
+    const repository = await client.postRepo({ link, description, userId });
+    return repository;
+  }
 };
 
 export default Mutation;

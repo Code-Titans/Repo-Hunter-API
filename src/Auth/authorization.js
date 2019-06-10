@@ -10,7 +10,7 @@ const authenticateUser = (req) => {
     );
   }
   const token = Authorization.replace('Bearer ', '');
-  const { payload } = jwt.verify(token, process.env.SECRET_KEY);
+  const payload = jwt.verify(token, process.env.SECRET_KEY);
   return payload;
 };
 

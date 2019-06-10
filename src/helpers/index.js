@@ -6,7 +6,7 @@ import isLength from 'validator/lib/isLength';
 const secretKey = process.env.SECRET_KEY;
 
 export const generateToken = payload => (
-  jwt.sign({ payload }, secretKey, { algorithm: 'HS256', expiresIn: '120h' })
+  jwt.sign(payload, secretKey, { algorithm: 'HS256', expiresIn: '120h' })
 );
 
 export const validateInput = (email, password) => {

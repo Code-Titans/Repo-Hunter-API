@@ -37,6 +37,21 @@ class PostgresAPI extends Pool {
     return this.userReducer(user);
   };
 
+  postRepo = async ({ link, description, userId }) => {
+    const repo = await this.query(
+      `
+      INSERT INTO repositories(repo_link, description, user_id)
+      VALUES($1, $2, $3)
+      RETURNING repo_id, repo_link, description
+      `,
+      [link, description, userId]
+    )
+    .then(res => res.rows[0])
+    .catch(err => err.message);
+
+    return this.repoReducer(repo)
+  };
+
   getUserByEmail = async (email) => {
     const user = await this.query(
       `
@@ -90,9 +105,9 @@ class PostgresAPI extends Pool {
   };
 
   repoReducer = (repository) => {
-    if (typeof user === 'string') throw new ForbiddenError(repository);
-    const { repo_id: id, name: repo, repo_link: repoLink } = repository;
-    return { id, repo, repoLink };
+    if (typeof repository === 'string') throw new ForbiddenError(repository);
+    const { repo_id: id, description, repo_link: repoLink } = repository;
+    return { id, description, repoLink };
   };
 
   userReducer = (user) => {

@@ -1,6 +1,6 @@
-type UserComment {
+type Comment {
     _id: String
-    comment: String
-    userId: Int
-    repoId: Int
+    text: String
+    author: User
+    repo: Repo
 }
