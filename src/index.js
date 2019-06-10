@@ -1,6 +1,9 @@
 import { ApolloServer } from 'apollo-server';
-import config from './graphql';
+import createSchema from './graphql/schema';
+import context from './graphql/context';
+const config = async () => ({
+  schema: await createSchema(),
+  context,
+});
+export const server = async () => new ApolloServer(await config());
 
-const server = new ApolloServer(config);
-
-module.exports = { server };

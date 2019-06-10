@@ -1,8 +1,8 @@
 const Query = {
   users: (_, __, { client }) => client.getAllUsers(),
-  user: (_, { id }, { client }) => client.getUser(id),
-  comments: async (_, { repoId }, { client, mongoClient }) => {
-    const comments = await mongoClient.getAllComments(repoId)
+  user: (_, { id }, { client }) => client.getUserById(id),
+  comments: async (_, { repoId }, { client, mongo }) => {
+    const comments = await mongo.getAllComments(repoId)
       .then(results => results);
     const result = await comments.map(
       async ({

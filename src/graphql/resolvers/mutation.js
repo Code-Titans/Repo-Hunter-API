@@ -60,7 +60,7 @@ const Mutation = {
     _,
     { repoId, userId, text: commentText },
     {
-      client, mongoClient, pubsub, req,
+      client, mongo, pubsub, req,
     },
   ) => {
     if (!commentText.trim()) {
@@ -73,7 +73,7 @@ const Mutation = {
     const {
       _id,
       text,
-    } = await mongoClient.createComment(repoId, userId, commentText);
+    } = await mongo.createComment(repoId, userId, commentText);
     const comment = {
       _id, text, author, repo,
     };

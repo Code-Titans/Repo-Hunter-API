@@ -11,6 +11,5 @@ const config = {
 };
 const mongoConfig = process.env.MONGO_URL;
 
-export default {
-  PostgresAPI, MongoDbAPI, config, mongoConfig,
-};
+export const mongo = new MongoDbAPI(mongoConfig);
+export const client = new PostgresAPI(config);

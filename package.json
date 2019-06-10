@@ -8,12 +8,11 @@
   "license": "MIT",
   "scripts": {
     "start": "nodemon bin/www",
-    "start:server": "nodemon  src/graphql/index.js",
     "db:migrate": "node bin/init_db",
     "lint": "eslint ./src"
   },
   "dependencies": {
-    "apollo-link": "^1.2.11",
+    "apollo-link-context": "^1.0.17",
     "apollo-link-http": "^1.5.14",
     "apollo-server": "^2.5.0",
     "bcrypt": "^3.0.6",
