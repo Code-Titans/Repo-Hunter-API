@@ -8,7 +8,10 @@
   "license": "MIT",
   "scripts": {
     "start": "nodemon bin/www",
-    "db:migrate": "node bin/init_db",
+    "migrate:latest": "npx knex migrate:latest",
+    "migrate:up": "npx knex migrate:up",
+    "migrate:down": "npx knex migrate:down",
+    "seed": "npx knex seed:run",
     "lint": "eslint ./src"
   },
   "dependencies": {
