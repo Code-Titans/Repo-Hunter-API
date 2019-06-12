@@ -1,137 +1,78 @@
-import { Pool } from 'pg';
-import { ForbiddenError } from 'apollo-server';
+import knex from '../../knex';
 
-class PostgresAPI extends Pool {
-  constructor(config) {
-    super(config);
-    this.on('connect', () => {
-      console.log('connected to the database');
-    });
-  }
-
-  socialAuthCreateUser = async ({ picture, email, name }) => {
-    const user = await this.query(
-      `
-      INSERT INTO user_details(email, name, profile_pic)
-      VALUES($1, $2, $3)
-      RETURNING user_id, email
-      `,
-      [email, name, picture],
+const getUserDetails = async (ids) => {
+  const user = await knex
+    .select('*')
+    .from('users')
+    .whereIn('id', [ids]);
+  return user;
+};
+const socialAuthCreateUser = async ({ picture, email, name }) => {
+  const user = await knex
+    .insert({ picture, email, name }, ['id', 'email'])
+    .into('users');
+  return user;
+};
+const createUser = async ({ email, password } = {}) => {
+  const user = await knex
+    .insert({ email, password }, ['id', 'email'])
+    .into('users');
+  return user[0];
+};
+const postRepo = async ({ link, description, id }) => {
+  const repo = await knex
+    .insert(
+      { repo_link: link, description, author_id: id },
+      ['id ', 'repo_link as repo', 'author_id as author'],
     )
-      .then(res => res.rows[0])
-      .catch(err => err.message);
-    return this.userReducer(user);
-  };
-
-  createUser = async ({ email, password } = {}) => {
-    const user = await this.query(
-      `
-        INSERT INTO user_details(email, password) 
-        VALUES($1, $2)
-        RETURNING user_id, email
-        `,
-      [email, password],
+    .into('posts');
+  return repo[0];
+};
+const validateUser = async (email) => {
+  const user = await knex
+    .select('id', 'email', 'password')
+    .from('users')
+    .where('email', email);
+  return user[0];
+};
+const getUserById = async (ids) => {
+  const user = await knex
+    .select('*')
+    .from('users')
+    .whereIn('id', [ids]);
+  return user;
+};
+const getRepository = async (repoId) => {
+  const repo = await knex
+    .select(
+      'repo_link as repo', 'description',
+      'author_id as id',
+      'created_at', 'updated_at',
     )
-      .then(res => res.rows[0])
-      .catch(err => err.message);
-    return this.userReducer(user);
-  };
+    .from('posts')
+    .where('id', repoId);
+  return repo;
+};
+const getUserAndRepo = async (userId, repoId) => {
+  const user = knex
+    .select('id', 'username')
+    .from('users')
+    .where('id', userId);
+  const repository = knex
+    .select('id')
+    .from('posts')
+    .where('id', repoId);
+  const [author, repo] = await Promise.all([user, repository]);
+  return { author: author[0], repo: repo[0] };
+};
 
-  postRepo = async ({ link, description, userId }) => {
-    const repo = await this.query(
-      `
-      INSERT INTO repositories(repo_link, description, user_id)
-      VALUES($1, $2, $3)
-      RETURNING repo_id, repo_link, description
-      `,
-      [link, description, userId]
-    )
-    .then(res => res.rows[0])
-    .catch(err => err.message);
-
-    return this.repoReducer(repo)
-  };
-
-  getUserByEmail = async (email) => {
-    const user = await this.query(
-      `
-        SELECT user_id, email, password 
-        FROM user_details
-        WHERE email=$1
-        `,
-      [email],
-    )
-      .then(res => res.rows[0])
-      .catch(err => err.message);
-    return user;
-  };
-
-  getAllUsers = async () => {
-    const users = await this.query('SELECT * FROM user_details')
-      .then(res => res.rows)
-      .catch(err => console.error(err.message, err.stack));
-    return users.map(user => this.userReducer(user));
-  };
-
-  getUserById = async (id) => {
-    const user = await this.query(
-      `
-        SELECT * 
-        FROM user_details
-        WHERE user_id=$1
-        `,
-      [id],
-    )
-      .then(res => res.rows[0])
-      .catch(err => err.message);
-    return this.userReducer(user);
-  };
-
-  getRepository = async (repoId) => {
-    const repository = await this.query(
-      `
-      SELECT *
-      FROM repositories
-      WHERE repo_id=$1
-      `,
-      [repoId],
-    )
-      .then(res => res.rows[0])
-      .catch(err => err.message);
-
-    if (!repository) throw Error('Repo not found');
-
-    return this.repoReducer(repository);
-  };
-
-  repoReducer = (repository) => {
-    if (typeof repository === 'string') throw new ForbiddenError(repository);
-    const { repo_id: id, description, repo_link: repoLink } = repository;
-    return { id, description, repoLink };
-  };
-
-  userReducer = (user) => {
-    if (!user) throw Error('User not found');
-    if (typeof user === 'string') throw new ForbiddenError(user);
-    const {
-      user_id: id, email, username, profilePic,
-    } = user;
-    return {
-      id, email, username, profilePic,
-    };
-  };
-
-  getUserAndRepo = async (userId, repoId) => {
-    const details = await Promise.all([
-      this.getUserById(userId),
-      this.getRepository(repoId),
-    ])
-      .then(async res => res)
-      .catch((err) => {
-        throw new Error(err.message);
-      });
-    return { author: details[0], repo: details[1] };
-  }
-}
-
-export default PostgresAPI;
+export default {
+  createUser,
+  getRepository,
+  getUserDetails,
+  getUserById,
+  getUserAndRepo,
+  validateUser,
+  postRepo,
+  socialAuthCreateUser,
+};

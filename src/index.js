@@ -1,5 +1,5 @@
 import { ApolloServer } from 'apollo-server';
-import { createConfig } from './graphql';
+import config from './graphql';
 
-export const server = async () => new ApolloServer(await createConfig());
+export const server = async () => new ApolloServer(await config());
 

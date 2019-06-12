@@ -20,9 +20,7 @@ class MongoDbAPI extends MongoClient {
     return comments;
   };
 
-  createComment = async (repoId, userId, text) => {
-    // TODO check i =f user exists
-    // TODO if the user does not exist throw an error
+  postComment = async (repoId, userId, text) => {
     const comment = await this.Comment.insertOne({
       repoId,
       userId,

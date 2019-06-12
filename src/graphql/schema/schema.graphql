@@ -6,18 +6,16 @@
 #import Repo from "./types/repo.graphql"
 
 type Query {
-    users: [User]
     user(id: Int): User
-    Repo: Repo
     comments(repoId: Int!, userId: Int): [Comment]
+    login(input: AuthenticationInput): Login
 }
 
 type Mutation {
     register(input: AuthenticationInput): UserLogin
-    login(input: AuthenticationInput): Login
     googleAuth(accessToken: String!): AuthResponse
     gitHubAuth: AuthResponse
-    createComment(userId: Int!, repoId: Int!, text: String!): Comment
+    postComment(userId: Int!, repoId: Int!, text: String!): Comment
     postRepo(post: PostRepoInput): Repo
 }
 

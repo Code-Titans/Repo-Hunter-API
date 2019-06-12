@@ -1,6 +1,6 @@
 import { UserInputError } from 'apollo-server';
 import bcrypt from 'bcrypt';
-import { generateToken, validateInput } from '../../helpers';
+import { validateInput } from '../../helpers';
 import { GoogleAuthenticate, GitHubAuthenticate } from '../../Auth/passport';
 import authenticateUser from '../../Auth/authorization';
 
@@ -38,25 +38,7 @@ const Mutation = {
     const user = await client.createUser({ email, password: hashedPassword });
     return user;
   },
-  login: async (_, { input:{ email, password } }, { client }) => {
-    validateInput(email);
-    const user = await client.getUserByEmail(email);
-
-    if (!user) throw Error('User not found');
-    if (typeof user === 'string') throw Error(user);
-    const match = await bcrypt.compare(password, user.password);
-
-    if (!match) throw new Error('Incorrect password');
-    const token = generateToken({ email: user.email, id: user.user_id });
-    return {
-      token,
-      user: {
-        id: user.user_id,
-        email: user.email,
-      },
-    };
-  },
-  createComment: async (
+  postComment: async (
     _,
     { repoId, userId, text: commentText },
     {
@@ -73,7 +55,7 @@ const Mutation = {
     const {
       _id,
       text,
-    } = await mongo.createComment(repoId, userId, commentText);
+    } = await mongo.postComment(repoId, userId, commentText);
     const comment = {
       _id, text, author, repo,
     };
@@ -81,12 +63,12 @@ const Mutation = {
     pubsub.publish(`COMMENT_${repoId}`, { comment });
     return comment;
   },
-  postRepo: async (_, { post: { link, description }}, { client, req }) => {
+  postRepo: async (_, { post: { link, description } }, { client, req }) => {
     if (!link) throw UserInputError('Link not provided');
-    const { id: userId } = authenticateUser(req);
-    const repository = await client.postRepo({ link, description, userId });
+    const { id } = authenticateUser(req);
+    const repository = await client.postRepo({ link, description, id });
     return repository;
-  }
+  },
 };
 
 export default Mutation;
