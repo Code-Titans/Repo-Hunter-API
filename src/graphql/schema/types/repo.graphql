@@ -9,3 +9,9 @@
     likes:Int
     owner: User
 }
+
+type RepoLikes {
+   repoId: Int
+   liked: Boolean
+   totalLikes: Int
+}

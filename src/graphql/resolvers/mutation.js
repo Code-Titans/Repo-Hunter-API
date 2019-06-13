@@ -40,7 +40,7 @@ const Mutation = {
   },
   postComment: async (
     _,
-    { repoId, userId, text: commentText },
+    { repoId, text: commentText },
     {
       client, mongo, pubsub, req,
     },
@@ -48,14 +48,13 @@ const Mutation = {
     if (!commentText.trim()) {
       throw new UserInputError('You can not post an empty comment');
     }
-
-    authenticateUser(req);
-    const { author, repo } = await client.getUserAndRepo(userId, repoId)
-      .then(res => res);
-    const {
-      _id,
-      text,
-    } = await mongo.postComment(repoId, userId, commentText);
+    const { id } = authenticateUser(req);
+    const userAndRepo = client.getUserAndRepo(id, repoId);
+    const commentDetails = mongo.postComment(repoId, id, commentText);
+    const [
+      { author, repo },
+      { text, _id },
+    ] = await Promise.all([userAndRepo, commentDetails]);
     const comment = {
       _id, text, author, repo,
     };
@@ -63,11 +62,19 @@ const Mutation = {
     pubsub.publish(`COMMENT_${repoId}`, { comment });
     return comment;
   },
-  postRepo: async (_, { post: { link, description } }, { client, req }) => {
+  postRepo: async (_, { link, description }, { client, req }) => {
     if (!link) throw UserInputError('Link not provided');
     const { id } = authenticateUser(req);
     const repository = await client.postRepo({ link, description, id });
     return repository;
+  },
+  likePost: async (_, { repoId }, { client, req }) => {
+    const { id } = authenticateUser(req);
+    const like = await client.likePost({
+      repoId,
+      id,
+    });
+    return like;
   },
 };
 

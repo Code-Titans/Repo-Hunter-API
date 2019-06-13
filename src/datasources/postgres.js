@@ -16,7 +16,10 @@ const socialAuthCreateUser = async ({ picture, email, name }) => {
 const createUser = async ({ email, password } = {}) => {
   const user = await knex
     .insert({ email, password }, ['id', 'email'])
-    .into('users');
+    .into('users')
+    .catch(() => {
+      throw new Error('User already exists');
+    });
   return user[0];
 };
 const postRepo = async ({ link, description, id }) => {
@@ -25,7 +28,10 @@ const postRepo = async ({ link, description, id }) => {
       { repo_link: link, description, author_id: id },
       ['id ', 'repo_link as repo', 'author_id as author'],
     )
-    .into('posts');
+    .into('posts')
+    .catch(() => {
+      throw new Error('Post already exists');
+    });
   return repo[0];
 };
 const validateUser = async (email) => {
@@ -65,6 +71,13 @@ const getUserAndRepo = async (userId, repoId) => {
   const [author, repo] = await Promise.all([user, repository]);
   return { author: author[0], repo: repo[0] };
 };
+const likePost = async ({ repoId, id }) => {
+  const likes = await knex.raw(
+    'SELECT toggle_like( ?, ? )',
+    [id, repoId],
+  );
+  return likes;
+};
 
 export default {
   createUser,
@@ -72,7 +85,8 @@ export default {
   getUserDetails,
   getUserById,
   getUserAndRepo,
-  validateUser,
+  likePost,
   postRepo,
   socialAuthCreateUser,
+  validateUser,
 };

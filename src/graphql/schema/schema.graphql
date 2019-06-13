@@ -4,10 +4,11 @@
 #import Login from "./types/login.graphql"
 #import AuthResponse, AuthInput from "./types/auth.graphql"
 #import Repo from "./types/repo.graphql"
+#import AuthenticationInput, UserRepoInput from "./types/input.graphql"
 
 type Query {
     user(id: Int): User
-    comments(repoId: Int!, userId: Int): [Comment]
+    comments(input: UserRepoInput): [Comment]
     login(input: AuthenticationInput): Login
 }
 
@@ -15,20 +16,11 @@ type Mutation {
     register(input: AuthenticationInput): UserLogin
     googleAuth(accessToken: String!): AuthResponse
     gitHubAuth: AuthResponse
-    postComment(userId: Int!, repoId: Int!, text: String!): Comment
-    postRepo(post: PostRepoInput): Repo
+    postComment(repoId: Int!, text: String!): Comment
+    postRepo(link: String!, description: String): Repo
+    likePost(repoId: Int!): RepoLikes
 }
 
 type Subscription {
     comment(repoId: Int!): Comment
-}
-
-input PostRepoInput {
-    link: String!
-    description: String
-}
-
-input AuthenticationInput {
-    email: String!
-    password: String!
 }
