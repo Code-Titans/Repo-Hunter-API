@@ -1,6 +1,6 @@
 import { UserInputError } from 'apollo-server';
 import bcrypt from 'bcrypt';
-import { validateInput } from '../../helpers';
+import { validateInput, ValidateRepo} from '../../helpers';
 import { GoogleAuthenticate, GitHubAuthenticate } from '../../Auth/passport';
 import authenticateUser from '../../Auth/authorization';
 
@@ -65,8 +65,12 @@ const Mutation = {
   postRepo: async (_, { link, description }, { client, req }) => {
     if (!link) throw UserInputError('Link not provided');
     const { id } = authenticateUser(req);
-    const repository = await client.postRepo({ link, description, id });
-    return repository;
+    const resource =  await ValidateRepo(link);
+    console.log(resource);
+    if(resource){
+      const repository = await client.postRepo({ link, description, id });
+      return repository;
+    }
   },
   likePost: async (_, { repoId }, { client, req }) => {
     const { id } = authenticateUser(req);
