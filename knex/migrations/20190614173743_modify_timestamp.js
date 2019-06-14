@@ -31,5 +31,9 @@ exports.up = function (knex, Promise) {
 exports.down = function (knex, Promise) {
   return Promise.all([
     knex.raw('DELETE FUNCTION on_update_timestamp'),
+    knex.raw('DELETE TRIGGER users_updated_at'),
+    knex.raw('DELETE TRIGGER likes_updated_at'),
+    knex.raw('DELETE TRIGGER followers_updated_at'),
+    knex.raw('DELETE TRIGGER posts_updated_at'),
   ]);
 };
