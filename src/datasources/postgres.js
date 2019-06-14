@@ -73,10 +73,14 @@ const getUserAndRepo = async (userId, repoId) => {
 };
 const likePost = async ({ repoId, id }) => {
   const likes = await knex.raw(
-    'SELECT toggle_like( ?, ? )',
+    `
+    SELECT total_likes, liked
+    FROM toggle_like(?, ?)
+    AS (total_likes BIGINT, liked BOOL)
+    `,
     [id, repoId],
   );
-  return likes;
+  return likes.rows[0];
 };
 
 export default {
