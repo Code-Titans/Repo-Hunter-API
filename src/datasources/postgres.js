@@ -60,16 +60,11 @@ const getRepository = async (repoId) => {
   return repo;
 };
 const getUserAndRepo = async (userId, repoId) => {
-  const user = knex
-    .select('id', 'username')
-    .from('users')
-    .where('id', userId);
-  const repository = knex
-    .select('id')
-    .from('posts')
-    .where('id', repoId);
-  const [author, repo] = await Promise.all([user, repository]);
-  return { author: author[0], repo: repo[0] };
+  const userAndRepo = await knex
+    .select('*')
+    .from('user_repo_info')
+    .where({ user_id: userId, repo_id: repoId });
+  return userAndRepo[0];
 };
 const likePost = async ({ repoId, id }) => {
   const likes = await knex.raw(

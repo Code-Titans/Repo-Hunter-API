@@ -52,11 +52,20 @@ const Mutation = {
     const userAndRepo = client.getUserAndRepo(id, repoId);
     const commentDetails = mongo.postComment(repoId, id, commentText);
     const [
-      { author, repo },
+      { username, repo_link: repoLink },
       { text, _id },
     ] = await Promise.all([userAndRepo, commentDetails]);
     const comment = {
-      _id, text, author, repo,
+      _id,
+      text,
+      author: {
+        id,
+        username,
+      },
+      repo: {
+        id: repoId,
+        repoLink,
+      },
     };
 
     pubsub.publish(`COMMENT_${repoId}`, { comment });
