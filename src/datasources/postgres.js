@@ -78,6 +78,7 @@ const likePost = async ({ repoId, id }) => {
   return likes.rows[0];
 };
 const updateRepoDescription = async (
+  // eslint-disable-next-line camelcase
   { repoId: id, description, id: author_id }) => {
   const repo = await knex('posts')
     .where({ id, author_id })
@@ -85,6 +86,7 @@ const updateRepoDescription = async (
     .returning('*');
   return repo;
 };
+// eslint-disable-next-line camelcase
 const deletePost = async ({ repoId: id, id: author_id }) => {
   const repo = await knex('posts')
     .where({ id, author_id })
