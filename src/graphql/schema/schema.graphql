@@ -19,6 +19,8 @@ type Mutation {
     postComment(repoId: Int!, text: String!): Comment
     postRepo(link: String!, description: String): Repo
     likePost(repoId: Int!): RepoLikes
+    editPostDescription(repoId: Int!, description: String!): Repo
+    deletePost(repoId: Int!): Repo
 }
 
 type Subscription {

@@ -25,17 +25,15 @@ const generateQueryUrl = link => `{
   resource(url:"${link}"){
     resourcePath
   }
+ 
 }`;
 
-export const ValidateRepo = (link) => {
+export const ValidateRepoLink = (link) => {
   const query = generateQueryUrl(link);
-  return request(
-    `https://api.github.com/graphql?access_token=${process.env.ACCESS_TOKEN}`,
-    query,
-  ).then(({ resource }) => {
-    if (!resource) throw new UserInputError('Invalid Url! 😢');
+  return request(`https://api.github.com/graphql?access_token=${process.env.ACCESS_TOKEN}`, query)
+    .then(({ resource }) => {
+      if (!resource) throw new UserInputError('Invalid Url! 😢');
 
-    return resource;
-  });
+      return resource;
+    });
 };
-

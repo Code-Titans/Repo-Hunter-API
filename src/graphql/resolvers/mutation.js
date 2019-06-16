@@ -1,6 +1,6 @@
-import { UserInputError } from 'apollo-server';
+import { UserInputError, ApolloError } from 'apollo-server';
 import bcrypt from 'bcrypt';
-import { validateInput, ValidateRepo } from '../../helpers';
+import { validateInput, ValidateRepoLink } from '../../helpers';
 import { GoogleAuthenticate, GitHubAuthenticate } from '../../Auth/passport';
 import authenticateUser from '../../Auth/authorization';
 
@@ -74,9 +74,8 @@ const Mutation = {
   postRepo: async (_, { link, description }, { client, req }) => {
     if (!link) throw UserInputError('Link not provided');
     const { id } = authenticateUser(req);
-    const resource = await ValidateRepo(link);
+    const resource = await ValidateRepoLink(link);
 
-    console.log(resource);
     if (resource) {
       const repository = await client.postRepo({ link, description, id });
       return repository;
@@ -93,6 +92,34 @@ const Mutation = {
       totalLikes,
       liked,
     };
+  },
+  editPostDescription: async (_, { repoId, description }, { client, req }) => {
+    const { id } = authenticateUser(req);
+    const [update] = await client.updateRepoDescription({
+      repoId,
+      description,
+      id,
+    });
+
+    if (!update) {
+      throw new ApolloError('You can not update this post! 😢');
+    }
+
+    return {
+      ...update,
+      repoLink: update.repo_link,
+      owner: {
+        id: update.author_id,
+      },
+    };
+  },
+  deletePost: async (_, { repoId }, { client, req }) => {
+    const { id } = authenticateUser(req);
+    const response = await client.deletePost({ repoId, id });
+
+    if (response === 0) {
+      throw new ApolloError('You can not delete this post! 😢');
+    }
   },
 };
 

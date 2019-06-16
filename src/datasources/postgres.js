@@ -77,6 +77,20 @@ const likePost = async ({ repoId, id }) => {
   );
   return likes.rows[0];
 };
+const updateRepoDescription = async (
+  { repoId: id, description, id: author_id }) => {
+  const repo = await knex('posts')
+    .where({ id, author_id })
+    .update({ description })
+    .returning('*');
+  return repo;
+};
+const deletePost = async ({ repoId: id, id: author_id }) => {
+  const repo = await knex('posts')
+    .where({ id, author_id })
+    .del();
+  return repo;
+};
 
 export default {
   createUser,
@@ -88,4 +102,6 @@ export default {
   postRepo,
   socialAuthCreateUser,
   validateUser,
+  updateRepoDescription,
+  deletePost,
 };

@@ -1,3 +1,4 @@
+const { updateTimestampTrigger } = require("../procedures");
 /* eslint-disable max-lines-per-function,func-names */
 exports.up = function (knex, Promise) {
   return Promise.all([
