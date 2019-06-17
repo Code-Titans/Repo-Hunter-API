@@ -59,12 +59,12 @@ const getRepository = async (repoId) => {
     .where('id', repoId);
   return repo;
 };
-const getUserAndRepo = async (userId, repoId) => {
-  const userAndRepo = await knex
+const getPost = async (repoId) => {
+  const post = await knex
     .select('*')
     .from('user_repo_info')
-    .where({ user_id: userId, repo_id: repoId });
-  return userAndRepo[0];
+    .where({ repo_id: repoId });
+  return post;
 };
 const likePost = async ({ repoId, id }) => {
   const likes = await knex.raw(
@@ -99,7 +99,7 @@ export default {
   getRepository,
   getUserDetails,
   getUserById,
-  getUserAndRepo,
+  getPost,
   likePost,
   postRepo,
   socialAuthCreateUser,

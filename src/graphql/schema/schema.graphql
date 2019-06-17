@@ -8,7 +8,7 @@
 
 type Query {
     user(id: Int): User
-    comments(input: UserRepoInput): [Comment]
+    comments(repoId: Int!): [Comment]
     login(input: AuthenticationInput): Login
 }
 
@@ -25,4 +25,5 @@ type Mutation {
 
 type Subscription {
     comment(repoId: Int!): Comment
+    like(repoId: Int!): RepoLikes
 }

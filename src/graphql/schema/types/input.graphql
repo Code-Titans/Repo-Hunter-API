@@ -5,6 +5,6 @@ input AuthenticationInput {
 }
 
 input UserRepoInput {
-    userId: Int!
+    userId: Int
     repoId: Int!
 }

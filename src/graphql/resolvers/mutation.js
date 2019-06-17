@@ -38,9 +38,9 @@ const Mutation = {
     const user = await client.createUser({ email, password: hashedPassword });
     return user;
   },
+  // eslint-disable-next-line max-lines-per-function
   postComment: async (
-    _,
-    { repoId, text: commentText },
+    _, { repoId, text: commentText },
     {
       client, mongo, pubsub, req,
     },
@@ -49,49 +49,41 @@ const Mutation = {
       throw new UserInputError('You can not post an empty comment');
     }
     const { id } = authenticateUser(req);
-    const userAndRepo = client.getUserAndRepo(id, repoId);
+    const user = client.getUserDetails(id);
+    const post = client.getPost(repoId);
     const commentDetails = mongo.postComment(repoId, id, commentText);
     const [
-      { username, repo_link: repoLink },
-      { text, _id },
-    ] = await Promise.all([userAndRepo, commentDetails]);
+      [{ username: commentAuthor, id: userId }],
+      [{ username, user_id: authorId, repo_link: repoLink }], { text, _id },
+    ] = await Promise.all([user, post, commentDetails]);
     const comment = {
       _id,
       text,
-      author: {
-        id,
-        username,
-      },
-      repo: {
-        id: repoId,
-        repoLink,
-      },
+      commentAuthor: { id: userId, username: commentAuthor },
+      postAuthor: { id: authorId, username },
+      repo: { id: repoId, repoLink },
     };
 
     pubsub.publish(`COMMENT_${repoId}`, { comment });
     return comment;
   },
   postRepo: async (_, { link, description }, { client, req }) => {
-    if (!link) throw UserInputError('Link not provided');
+    if (!link) throw new UserInputError('Link not provided');
     const { id } = authenticateUser(req);
-    const resource = await ValidateRepoLink(link);
-
-    if (resource) {
-      const repository = await client.postRepo({ link, description, id });
-      return repository;
-    }
+    const { url } = await ValidateRepoLink(link);
+    const repository = await client.postRepo({ link: url, description, id });
+    return repository;
   },
-  likePost: async (_, { repoId }, { client, req }) => {
+  likePost: async (_, { repoId }, { client, pubsub, req }) => {
     const { id } = authenticateUser(req);
     const { total_likes: totalLikes, liked } = await client.likePost({
       repoId,
       id,
     });
-    return {
-      repoId,
-      totalLikes,
-      liked,
-    };
+    const like = { repoId, totalLikes, liked };
+
+    pubsub.publish(`LIKE_${repoId}`, { like });
+    return like;
   },
   editPostDescription: async (_, { repoId, description }, { client, req }) => {
     const { id } = authenticateUser(req);
