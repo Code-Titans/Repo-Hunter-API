@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 import knex from '../../knex';
 
 const getUserDetails = async (ids) => {
@@ -78,15 +79,18 @@ const likePost = async ({ repoId, id }) => {
   return likes.rows[0];
 };
 const updateRepoDescription = async (
-  // eslint-disable-next-line camelcase
-  { repoId: id, description, id: author_id }) => {
+  {
+    repoId: id,
+    link: repo_link,
+    description,
+    id: author_id,
+  }) => {
   const repo = await knex('posts')
     .where({ id, author_id })
-    .update({ description })
+    .update({ description, repo_link })
     .returning('*');
   return repo;
 };
-// eslint-disable-next-line camelcase
 const deletePost = async ({ repoId: id, id: author_id }) => {
   const repo = await knex('posts')
     .where({ id, author_id })

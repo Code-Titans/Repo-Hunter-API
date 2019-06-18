@@ -1,3 +1,4 @@
+/* eslint-disable max-lines-per-function */
 import { UserInputError, ApolloError } from 'apollo-server';
 import bcrypt from 'bcrypt';
 import { validateInput, ValidateRepoLink } from '../../helpers';
@@ -85,10 +86,15 @@ const Mutation = {
     pubsub.publish(`LIKE_${repoId}`, { like });
     return like;
   },
-  editPostDescription: async (_, { repoId, description }, { client, req }) => {
+  updatePost: async (
+    _,
+    { repoId, link, description },
+    { client, req, pubsub },
+  ) => {
     const { id } = authenticateUser(req);
     const [update] = await client.updateRepoDescription({
       repoId,
+      link,
       description,
       id,
     });
@@ -96,6 +102,16 @@ const Mutation = {
     if (!update) {
       throw new ApolloError('You can not update this post! 😢');
     }
+
+    pubsub.publish(`POST${repoId}`, {
+      updatePost: {
+        ...update,
+        repoLink: update.repo_link,
+        owner: {
+          id: update.author_id,
+        },
+      },
+    });
 
     return {
       ...update,
