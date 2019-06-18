@@ -92,15 +92,26 @@ const Mutation = {
     { client, req, pubsub },
   ) => {
     const { id } = authenticateUser(req);
-    const [update] = await client.updateRepoDescription({
-      repoId,
-      link,
-      description,
-      id,
-    });
+    const { url } = await ValidateRepoLink(link);
 
+    let update;
+
+    if (link && description) {
+      [update] = await client.updatePost({
+        repoId,
+        link: url,
+        description,
+        id,
+      });
+    }
+    if (description) {
+      [update] = await client.updatePostDetails({ repoId, description, id });
+    }
+    if (link) {
+      [update] = await client.updatePostDetails({ repoId, link: url, id });
+    }
     if (!update) {
-      throw new ApolloError('You can not update this post! 😢');
+      throw new ApolloError('You can only update your own post(s)! 😢');
     }
 
     pubsub.publish(`POST${repoId}`, {

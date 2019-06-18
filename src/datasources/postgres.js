@@ -78,11 +78,34 @@ const likePost = async ({ repoId, id }) => {
   );
   return likes.rows[0];
 };
-const updateRepoDescription = async (
+const updatePostDetails = async (
   {
     repoId: id,
-    link: repo_link,
     description,
+    link: repo_link,
+    id: author_id,
+  }) => {
+  let repo;
+  if (description) {
+    repo = await knex('posts')
+      .where({ id, author_id })
+      .update({ description })
+      .returning('*');
+  }
+  if (repo_link) {
+    repo = await knex('posts')
+      .where({ id, author_id })
+      .update({ repo_link })
+      .returning('*');
+  }
+  console.log({repo});
+  return repo;
+};
+const updatePost = async (
+  {
+    repoId: id,
+    description,
+    link: repo_link,
     id: author_id,
   }) => {
   const repo = await knex('posts')
@@ -108,6 +131,7 @@ export default {
   postRepo,
   socialAuthCreateUser,
   validateUser,
-  updateRepoDescription,
+  updatePost,
+  updatePostDetails,
   deletePost,
 };
