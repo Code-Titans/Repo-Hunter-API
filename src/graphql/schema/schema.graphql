@@ -9,12 +9,12 @@
 type Query {
     user(id: Int): User
     comments(repoId: Int!): [Comment]
-    login(input: AuthenticationInput): Login
 }
 
 type Mutation {
-    register(input: AuthenticationInput): UserLogin
-    googleAuth(accessToken: String!): AuthResponse
+    login(input: AuthenticationInput): Login
+    register(input: AuthenticationInput): Login
+    googleAuth: AuthResponse
     gitHubAuth: AuthResponse
     postComment(repoId: Int!, text: String!): Comment
     postRepo(link: String!, description: String): Repo

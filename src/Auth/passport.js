@@ -1,6 +1,6 @@
 import passport from 'passport';
-import GoogleStrategy from 'passport-google-oauth20/lib';
-import GitHubStrategy from 'passport-github/lib';
+import GoogleStrategy from 'passport-google-oauth20';
+import GitHubStrategy from 'passport-github';
 
 passport.use(
   new GoogleStrategy({
@@ -8,10 +8,8 @@ passport.use(
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
     callbackURL: process.env.CALLBACK_URL,
   }, (accessToken, refreshToken, profile, done) => {
-    // TODO check if user exists in the
-    //  database using the googleId
-    // TODO create the user if they don't exist
     done(profile);
+    console.log(profile)
   }),
 );
 
@@ -20,6 +18,7 @@ passport.use(
     clientID: process.env.GITHUB_CLIENT_ID,
     clientSecret: process.env.GITHUB_CLIENT_SECRET,
     callbackURL: process.env.CALLBACK_URL,
+    userProfileURL: 'https://www.googleapis.com/oauth2/v3/userinfo',
   }, (accessToken, refreshToken, profile, done) => {
     done(profile);
   }),

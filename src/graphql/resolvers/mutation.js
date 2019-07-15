@@ -1,18 +1,14 @@
 /* eslint-disable max-lines-per-function */
 import { UserInputError, ApolloError } from 'apollo-server';
 import bcrypt from 'bcrypt';
-import { validateInput, ValidateRepoLink } from '../../helpers';
+import { generateToken, validateInput, ValidateRepoLink } from '../../helpers';
 import { GoogleAuthenticate, GitHubAuthenticate } from '../../Auth/passport';
 import authenticateUser from '../../Auth/authorization';
 
 const Mutation = {
-  googleAuth: async (_, { accessToken }, { request, response }) => {
-    request.body = {
-      ...request.body,
-      access_token: accessToken,
-    };
+  googleAuth: async (_, __, { req, res }) => {
     try {
-      const { data, info } = await GoogleAuthenticate(request, response);
+      const { data, info } = await GoogleAuthenticate(req, res);
 
       if (data) {
         console.log(data);
@@ -24,20 +20,38 @@ const Mutation = {
       return e;
     }
   },
-  gitHubAuth: async (_, __, { request, response }) => {
+  gitHubAuth: async (_, __, { req, res }) => {
     try {
-      const { data } = await GitHubAuthenticate(request, response);
+      const { data } = await GitHubAuthenticate(req, res);
       return data;
     } catch (e) {
       return e;
     }
+  },
+  login: async (_, { input: { email, password } }, { client }) => {
+    validateInput(email);
+    const user = await client.validateUser(email);
+
+    if (!user) throw Error('User not found');
+    const match = await bcrypt.compare(password, user.password);
+
+    if (!match) throw new Error('Incorrect password');
+    const token = generateToken({ email: user.email, id: user.id });
+    return {
+      token,
+      user: {
+        id: user.id,
+        email: user.email,
+      },
+    };
   },
   register: async (_, { input: { email, password } }, { client }) => {
     validateInput(email, password);
     const salt = await bcrypt.genSalt();
     const hashedPassword = await bcrypt.hash(password, salt);
     const user = await client.createUser({ email, password: hashedPassword });
-    return user;
+    const token = generateToken({ email: user.email, id: user.id });
+    return { user, token };
   },
   // eslint-disable-next-line max-lines-per-function
   postComment: async (

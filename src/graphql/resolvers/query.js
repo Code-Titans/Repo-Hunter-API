@@ -1,25 +1,5 @@
-import bcrypt from 'bcrypt';
-import { generateToken, validateInput } from '../../helpers';
-
 const Query = {
   user: (_, { id }, { client }) => client.getUserById(id),
-  login: async (_, { input: { email, password } }, { client }) => {
-    validateInput(email);
-    const user = await client.validateUser(email);
-
-    if (!user) throw Error('User not found');
-    const match = await bcrypt.compare(password, user.password);
-
-    if (!match) throw new Error('Incorrect password');
-    const token = generateToken({ email: user.email, id: user.id });
-    return {
-      token,
-      user: {
-        id: user.id,
-        email: user.email,
-      },
-    };
-  },
   comments: async (_, { repoId }, { client, mongo }) => {
     // FIXME pagination should be applied here
     const comments = await mongo
