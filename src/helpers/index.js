@@ -37,7 +37,7 @@ export const ValidateRepoLink = (link) => {
   )
     .then(({ resource }) => {
       if (!resource) throw new UserInputError('Invalid Url! 😢');
-
+      console.log(resource)
       return resource;
     });
 };
