@@ -6,6 +6,8 @@ const createConfig = async () => {
   return {
     schema,
     context,
+    introspection: true,
+    playground: true,
   };
 };
 
