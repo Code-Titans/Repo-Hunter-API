@@ -1,5 +1,8 @@
+import { repositoryListQuery } from './types';
+
 const Query = {
   user: (_, { id }, { client }) => client.getUserById(id),
+  repoList: repositoryListQuery,
   comments: async (_, { repoId }, { client, mongo }) => {
     // FIXME pagination should be applied here
     const comments = await mongo

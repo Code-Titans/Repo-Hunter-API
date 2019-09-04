@@ -1,21 +1,16 @@
 #import User from "./types/user.graphql"
 #import UserComment from './types/comment.graphql'
-#import UserLogin from "./types/login.graphql"
-#import Login from "./types/login.graphql"
 #import AuthResponse, AuthInput from "./types/auth.graphql"
 #import Repo from "./types/repo.graphql"
-#import AuthenticationInput, UserRepoInput from "./types/input.graphql"
 
 type Query {
     user(id: Int): User
     comments(repoId: Int!): [Comment]
+    repoList: Repo
 }
 
 type Mutation {
-    login(input: AuthenticationInput): Login
-    register(input: AuthenticationInput): Login
-    googleAuth: AuthResponse
-    gitHubAuth: AuthResponse
+    gitHubAuth(code: String!): AuthResponse
     postComment(repoId: Int!, text: String!): Comment
     postRepo(link: String!, description: String): Repo
     likePost(repoId: Int!): RepoLikes

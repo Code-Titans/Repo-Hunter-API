@@ -1,9 +1,4 @@
 
-input AuthenticationInput {
-    email: String!
-    password: String!
-}
-
 input UserRepoInput {
     userId: Int
     repoId: Int!

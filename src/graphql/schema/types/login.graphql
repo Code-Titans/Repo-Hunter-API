@@ -1,9 +1,0 @@
-type Login {
-    token: String!
-    user: UserLogin!
-}
-
-type UserLogin {
-    id: String!
-    email: String!
-}

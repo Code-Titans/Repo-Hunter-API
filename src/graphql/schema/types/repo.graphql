@@ -2,12 +2,12 @@
 
  type Repo {
     id: ID!
-    repo: String!
-    repoLink: String
+    imageUrl: String
     description: String
-    comments: [Comment]
+    comments: Int
     likes:Int
-    owner: User
+    title: String
+    starsGazers: Int
 }
 
 type RepoLikes {
