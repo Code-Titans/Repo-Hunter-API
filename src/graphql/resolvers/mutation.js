@@ -1,58 +1,10 @@
-/* eslint-disable max-lines-per-function */
 import { UserInputError, ApolloError } from 'apollo-server';
-import bcrypt from 'bcrypt';
-import { generateToken, validateInput, ValidateRepoLink } from '../../helpers';
-import { GoogleAuthenticate, GitHubAuthenticate } from '../../Auth/passport';
-import authenticateUser from '../../Auth/authorization';
+import authenticateUser from '../../auth/authorization';
+// eslint-disable-next-line import/named
+import { githubAuthMutation } from './types';
 
 const Mutation = {
-  googleAuth: async (_, __, { req, res }) => {
-    try {
-      const { data, info } = await GoogleAuthenticate(req, res);
-
-      if (data) {
-        console.log(data);
-      }
-
-      console.log({ info });
-      return data;
-    } catch (e) {
-      return e;
-    }
-  },
-  gitHubAuth: async (_, __, { req, res }) => {
-    try {
-      const { data } = await GitHubAuthenticate(req, res);
-      return data;
-    } catch (e) {
-      return e;
-    }
-  },
-  login: async (_, { input: { email, password } }, { client }) => {
-    validateInput(email);
-    const user = await client.validateUser(email);
-
-    if (!user) throw Error('User not found');
-    const match = await bcrypt.compare(password, user.password);
-
-    if (!match) throw new Error('Incorrect password');
-    const token = generateToken({ email: user.email, id: user.id });
-    return {
-      token,
-      user: {
-        id: user.id,
-        email: user.email,
-      },
-    };
-  },
-  register: async (_, { input: { email, password } }, { client }) => {
-    validateInput(email, password);
-    const salt = await bcrypt.genSalt();
-    const hashedPassword = await bcrypt.hash(password, salt);
-    const user = await client.createUser({ email, password: hashedPassword });
-    const token = generateToken({ email: user.email, id: user.id });
-    return { user, token };
-  },
+  gitHubAuth: githubAuthMutation,
   // eslint-disable-next-line max-lines-per-function
   postComment: async (
     _, { repoId, text: commentText },
@@ -85,8 +37,7 @@ const Mutation = {
   postRepo: async (_, { link, description }, { client, req }) => {
     if (!link) throw new UserInputError('Link not provided');
     const { id } = authenticateUser(req);
-    const { url } = await ValidateRepoLink(link);
-    const repository = await client.postRepo({ link: url, description, id });
+    const repository = await client.postRepo({ description, id });
     return repository;
   },
   likePost: async (_, { repoId }, { client, pubsub, req }) => {
@@ -106,14 +57,11 @@ const Mutation = {
     { client, req, pubsub },
   ) => {
     const { id } = authenticateUser(req);
-    const { url } = await ValidateRepoLink(link);
 
     let update;
-
     if (link && description) {
       [update] = await client.updatePost({
         repoId,
-        link: url,
         description,
         id,
       });
@@ -122,7 +70,7 @@ const Mutation = {
       [update] = await client.updatePostDetails({ repoId, description, id });
     }
     if (link) {
-      [update] = await client.updatePostDetails({ repoId, link: url, id });
+      [update] = await client.updatePostDetails({ repoId, id });
     }
     if (!update) {
       throw new ApolloError('You can only update your own post(s)! 😢');
@@ -141,9 +89,7 @@ const Mutation = {
     return {
       ...update,
       repoLink: update.repo_link,
-      owner: {
-        id: update.author_id,
-      },
+      owner: { id: update.author_id },
     };
   },
   deletePost: async (_, { repoId }, { client, req }) => {

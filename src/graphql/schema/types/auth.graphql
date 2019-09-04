@@ -1,4 +1,3 @@
 type AuthResponse {
-    token: String
-    name: String
+    token: String!
 }

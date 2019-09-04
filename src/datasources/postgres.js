@@ -98,7 +98,8 @@ const updatePostDetails = async (
       .update({ repo_link })
       .returning('*');
   }
-  console.log({repo});
+
+  console.log({ repo });
   return repo;
 };
 const updatePost = async (

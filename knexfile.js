@@ -2,10 +2,7 @@ module.exports = {
   development: {
     client: 'pg',
     connection: {
-      host: process.env.PGHOST || '127.0.0.1',
-      user: process.env.PGUSER || 'postgres',
-      password: process.env.PGPASSWORD || '',
-      database: process.env.PGDATABASE || 'repohunter',
+      connection: process.env.DATABASE_URL,
       charset: 'utf8',
     },
     migrations: {
