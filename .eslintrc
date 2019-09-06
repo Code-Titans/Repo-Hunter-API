@@ -26,7 +26,7 @@
     "complexity": ["error", 12],
     "max-len": ["error", { "code": 80, "comments": 65, "ignoreUrls": true }],
     "max-depth": ["error", 4],
-    "max-lines-per-function": ["error", { "max": 25, "skipComments": true, "skipBlankLines": true }],
+    "max-lines-per-function": 0,
     "no-unreachable": "error",
     "consistent-return": "off",
     "no-return-await": "error",

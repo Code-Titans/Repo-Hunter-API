@@ -1,27 +1,17 @@
 /* eslint-disable camelcase */
 import knex from '../../knex';
+// eslint-disable-next-line import/named
+import {
+  createUser,
+  getUserById,
+  getUserDetails,
+} from './queries/usersTableQueries';
 
-const getUserDetails = async (ids) => {
-  const user = await knex
-    .select('*')
-    .from('users')
-    .whereIn('id', [ids]);
-  return user;
-};
 const socialAuthCreateUser = async ({ picture, email, name }) => {
   const user = await knex
     .insert({ picture, email, name }, ['id', 'email'])
     .into('users');
   return user;
-};
-const createUser = async ({ email, password } = {}) => {
-  const user = await knex
-    .insert({ email, password }, ['id', 'email'])
-    .into('users')
-    .catch(() => {
-      throw new Error('User already exists');
-    });
-  return user[0];
 };
 const postRepo = async ({ link, description, id }) => {
   const repo = await knex
@@ -41,13 +31,6 @@ const validateUser = async (email) => {
     .from('users')
     .where('email', email);
   return user[0];
-};
-const getUserById = async (ids) => {
-  const user = await knex
-    .select('*')
-    .from('users')
-    .whereIn('id', [ids]);
-  return user;
 };
 const getRepository = async (repoId) => {
   const repo = await knex
