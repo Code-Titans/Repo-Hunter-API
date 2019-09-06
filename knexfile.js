@@ -1,10 +1,7 @@
 module.exports = {
   development: {
     client: 'pg',
-    connection: {
-      connection: process.env.DATABASE_URL,
-      charset: 'utf8',
-    },
+    connection: process.env.DATABASE_URL,
     migrations: {
       directory: `${__dirname}/knex/migrations`,
     },
@@ -14,10 +11,7 @@ module.exports = {
   },
   production: {
     client: 'pg',
-    connection: {
-      connection: process.env.DATABASE_URL,
-      charset: 'utf8',
-    },
+    connection: process.env.DATABASE_URL,
     migrations: {
       directory: `${__dirname}/knex/migrations`,
     },

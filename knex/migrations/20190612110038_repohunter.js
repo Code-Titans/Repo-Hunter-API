@@ -4,7 +4,7 @@ exports.up = function (knex, Promise) {
     knex.schema.createTable('users', (table) => {
       table.bigIncrements('id').primary().unsigned();
       table.string('username').unique();
-      table.string('email').unique();
+      table.string('email');
       table.string('name');
       table.string('password');
       table.string('picture');

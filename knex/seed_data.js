@@ -12,19 +12,20 @@ function getRandomInt(min, max) {
 
 module.exports = {
   generateUsers() {
-  // eslint-disable-next-line no-plusplus
     const users = [];
 
+    // eslint-disable-next-line no-plusplus
     for (let i = 0; i < n; i++) {
       const user = {
         username: faker.internet.userName(),
         email: faker.internet.email(),
         name: `${faker.name.firstName()} ${faker.name.lastName()}`,
-        password: faker.internet.password(),
+        location: faker.address.city(),
         picture: faker.image.imageUrl(),
         company: faker.company.companyName(),
         bio: faker.lorem.sentence(),
         website: faker.internet.url(),
+        is_hireable: false,
       };
 
       users.push(user);
@@ -35,6 +36,7 @@ module.exports = {
   generateRepos() {
     const repos = [];
 
+    // eslint-disable-next-line no-plusplus
     for (let i = 0; i < n; i++) {
       const repo = {
         repo_link: `https://github.com/${faker.internet.userName()}/${faker.lorem.slug()}`,
