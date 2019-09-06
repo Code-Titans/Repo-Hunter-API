@@ -3,9 +3,10 @@ import jwt from 'jsonwebtoken';
 import { GraphQLClient } from 'graphql-request';
 
 const getUserDetailsFromGithub = async (accessToken) => {
-  const endpoint = 'http://localhost:4200/';
-  const graphQLClient = new GraphQLClient(endpoint, {
-    headers: { authorization: `Bearer ${accessToken}` },
+  const graphQLClient = new GraphQLClient('https://api.github.com/graphql', {
+    headers: {
+      Authorization: `token ${accessToken}`,
+    },
   });
   const query = `
     {
