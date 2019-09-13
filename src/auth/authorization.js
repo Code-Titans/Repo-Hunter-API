@@ -12,4 +12,9 @@ const authenticateUser = (req) => {
   return payload;
 };
 
+export const jwtSign = payload => jwt.sign({
+  exp: Math.floor(Date.now() / 1000) + 3600,
+  data: payload,
+}, process.env.SECRET_KEY);
+
 export default authenticateUser;

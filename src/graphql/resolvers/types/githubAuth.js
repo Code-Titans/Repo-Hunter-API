@@ -1,8 +1,8 @@
 import fetch from 'node-fetch';
-import jwt from 'jsonwebtoken';
 import { GraphQLClient } from 'graphql-request';
+import { jwtSign } from '../../../auth/authorization';
 
-const getUserDetailsFromGithub = async (accessToken) => {
+export const getUserDetailsFromGithub = async (accessToken) => {
   const graphQLClient = new GraphQLClient('https://api.github.com/graphql', {
     headers: {
       Authorization: `token ${accessToken}`,
@@ -32,12 +32,7 @@ const getUserDetailsFromGithub = async (accessToken) => {
   }
 };
 
-export default async (_, { code }, { client }) => {
-  const body = {
-    client_id: process.env.GITHUB_CLIENT_ID,
-    client_secret: process.env.GITHUB_CLIENT_SECRET,
-    code,
-  };
+export const getAccessTokenFromGithub = async (body) => {
   const { access_token: accessToken } = await
   fetch('https://github.com/login/oauth/access_token', {
     method: 'POST',
@@ -50,12 +45,20 @@ export default async (_, { code }, { client }) => {
     .then(result => result.json())
     .then(json => json)
     .catch(err => console.error(err.message));
+  return accessToken;
+};
+
+export default async (_, { code }, { client }) => {
+  const body = {
+    client_id: process.env.GITHUB_CLIENT_ID,
+    client_secret: process.env.GITHUB_CLIENT_SECRET,
+    code,
+  };
+  const accessToken = await getAccessTokenFromGithub(body);
   const userProfile = await getUserDetailsFromGithub(accessToken);
   const user = await client.createUser(userProfile);
-  const token = jwt.sign({
-    exp: Math.floor(Date.now() / 1000) + 3600,
-    data: { ...user, accessToken },
-  }, process.env.SECRET_KEY);
+  const payload = { ...user, accessToken };
+  const token = jwtSign(payload);
   return {
     token,
   };
