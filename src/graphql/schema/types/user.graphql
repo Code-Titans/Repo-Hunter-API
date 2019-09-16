@@ -1,10 +1,12 @@
 type User {
     id: ID!
+    name: String
     username: String
     email: String
     bio: String
     company: String
     website: String
     location: String
-    profilePic: String
+    picture: String
+    isHireable: Boolean
 }

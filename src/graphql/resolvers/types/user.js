@@ -1,8 +1,7 @@
-const User = {
-  id: parent => parent.userId,
-  username: parent => parent.username,
-  firstName: parent => parent.firstName,
-  lastName: async parent => parent.lastName,
-};
+import authenticateUser from '../../../auth/authorization';
 
-export default User;
+export default async (_, __, { client, req }) => {
+  const { data: { id } } = authenticateUser(req);
+  const [userDetails] = await client.getUserById(id);
+  return userDetails;
+};
