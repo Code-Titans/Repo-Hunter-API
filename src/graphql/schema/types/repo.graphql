@@ -2,10 +2,7 @@
 
  type Repo {
     id: ID!
-    imageUrl: String
     description: String
-    comments: Int
-    likes:Int
     title: String
     starsGazers: Int
 }
